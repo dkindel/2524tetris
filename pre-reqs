@@ -1,0 +1,5 @@
+Packages needed to run: 
+
+Tkinter
+  -run sudo zypper (or apt-get) install python-tk
+  - #import Tkinter for python 2 and tkinter for python 3

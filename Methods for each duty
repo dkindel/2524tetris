@@ -1,0 +1,47 @@
+Required Methods
+
+I suggest using tkinter instead of curses.  This is the standard python GUI toolkit.
+This makes handling events and drawing the board itself much easier and looking better.
+
+Matrix (15x10 2D array)
+  - get matrix
+  - update matrix with current piece
+  - initialize matrix function
+  - subtract row function
+  - test valid move from current shape
+
+Event Handlers
+  - Look for key press events.
+    - left or right, move left or right.
+    - key press to rotate
+    - another key press to immediately drop the piece (not necessary but would be nice)
+    - timer event to lower the piece by 1 row - call run in main
+    - decide if end game
+    
+
+Current Shape - must have shape, rotation, and board location data)
+  - get shape type (Z, S, L, I, O, J, T)
+  - set shape type
+  - get rotation (possible rotations for each piece. (Either 1, 2, or 4))
+  - set rotation
+  - Rotate piece (takes param counter clockwise or clockwise...possibly as boolean?)
+    - may need to know the center of a piece to rotate around.  
+  - Move piece (left or right)
+    - update the matrix, then call the redraw board method
+  - To test if a valid move, we can move, test if valid, and the unmake if required
+  
+GUI
+  - redraw board 
+    - get new matrix
+    - get current piece
+  
+Overall
+  - Initialize
+    - board (matrix)
+    - current falling piece
+    - score
+  - Run method that repeats at a specified time
+    - calls method to update the boolean matrix with a new matrix and new current shape position
+  - get random next shape
+  - increment score
+  - handle game ending
