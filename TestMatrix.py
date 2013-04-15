@@ -1,6 +1,8 @@
 #!/usr/bin/python2
 # ECE 2524 Final Project - Tetris
 
+score = 0
+
 def getNewMatrix(num):
   if(num == 0):
     return [[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0], \
@@ -13,3 +15,12 @@ def getNewMatrix(num):
 
 def getNumMatrices():
   return 2
+  
+def getScore():
+  global score
+  retScore = score/2
+  score = score +1
+  return retScore
+  
+def initScore():
+  score = 0

@@ -10,10 +10,9 @@ class Application(Frame):
   def initDraw(self):
     
     self.board = Canvas(self, bg = 'gray', height = self.boardHeight, width = self.boardWidth, bd = 0)
-    self.chcol = Button(self, bg = 'red')
-    self.chcol["command"] = self.changeMatrix
-    self.chcol["text"] = "Redraw"
-    self.chcol.pack(side = BOTTOM)
+    self.scoreBox = Text(self, height = 1)
+    self.scoreBox.insert(INSERT, "Score: " +  str(0))
+    self.scoreBox.pack(side = BOTTOM)
     
     self.redrawBoard()
     self.board.pack()
@@ -35,6 +34,8 @@ class Application(Frame):
     self.matrixNum = 0
     self.matrix = getNewMatrix(self.matrixNum)
     
+    self.score = 0
+    initScore()
     master.title("Tetris!")
     self.pack()
     self.initDraw()
@@ -64,6 +65,9 @@ class Application(Frame):
     
   def keyleft(self, event):
     self.changeMatrix()
+    newScore = getScore()
+    if(self.score != newScore):
+      self.updateScore(newScore)
     
   def keyUp(self, event):
     print 'up'
@@ -74,6 +78,12 @@ class Application(Frame):
   def keyEscape(self, event):
     root.quit()
 
+    
+  def updateScore(self, score):
+    self.score = score
+    self.scoreBox.delete(1.0, END)
+    self.scoreBox.insert(INSERT, "Score: " +  str(score))
+    
 root = Tk()
 app = Application(master = root)
 app.mainloop()
