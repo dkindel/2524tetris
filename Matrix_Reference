@@ -1,0 +1,12 @@
+Class:
+Matrix
+
+Variables:
+int[10][15] _matrix		# 10 x 15 int type matrix. int value can be 0, 1 and 2
+
+Methods:
+int getValue(int x, int y)				# return the value at the specified location. return -1 if x or y is invalid
+bool setValue(int x, int y, int value)	# set the value at the specifed location. return a boolean. false if failed.
+int[10][15] getMatrix()					# return the whole matrix
+bool setMatrix(int[10][15] newMatrix)	# replace the entire matrix with the new matrix, return false if newMatrix is not valid
+void clear2s()							# set all 2's to value 1

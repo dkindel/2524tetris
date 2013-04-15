@@ -1,0 +1,28 @@
+Class:
+Shape
+
+Variables:
+enum(Z, S, L, I, O, J, T) _type	# stores the type of shape
+int[4][4] _shape				# the actual orientation of the current shape (0 or 2, be consistent with Matrix)
+int _position_x					# x coordinate of the center, 0-9
+int _position_y					# y coordinate of the center, 0-14
+
+
+Methods:
+##### constructor #####
+Shape()							# default constructor, type will be randomly selected on object constructing
+##### type related #####
+char getType()					# return the char represent its type
+void selectType()					# randomly set a type
+##### position related #####
+int getX()						# return the value fo _position_x
+int getY()						# return the value fo _position_y
+void moveDown()					
+void moveRight()
+void moveLeft()
+void moveTo(int newX, int newY)	# set position with new values
+##### rotation related #####
+void rotateCW()						# rotate the shape clockwise
+void rotateCC()						# rotate the shape conter-clockwise
+##### shape related #####
+int[4][4] getShape()				# return the actual 4x4 shape matrix
