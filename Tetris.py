@@ -16,12 +16,12 @@ class Application(Frame):
     
     self.redrawBoard()
     self.board.pack()
-    #self.board.after(1000, self.changeMatrix)
     
   def __init__(self, master=None):
     root.bind_all('<Left>', self.keyleft)
     root.bind_all('<Right>', self.keyRight)
     root.bind_all('<Up>', self.keyUp)
+    root.bind_all('<Down>', self.keyDown)
     root.bind_all('<Escape>', self.keyEscape)
     Frame.__init__(self, master)
     self.boardHeight = 400
@@ -33,12 +33,15 @@ class Application(Frame):
     self.cols = 10
     self.matrixNum = 0
     self.matrix = getNewMatrix(self.matrixNum)
+    self.timer = 2000
     
     self.score = 0
+    
     initScore()
     master.title("Tetris!")
     self.pack()
     self.initDraw()
+    self._job = self.after(self.timer, self.moveDown, 1)
     
     
   def redrawBoard(self):
@@ -64,25 +67,43 @@ class Application(Frame):
     
     
   def keyleft(self, event):
+    print "left"
+    
+  def keyUp(self, event):
+    
     self.changeMatrix()
     newScore = getScore()
     if(self.score != newScore):
       self.updateScore(newScore)
-    
-  def keyUp(self, event):
-    print 'up'
     
   def keyRight(self, event):
     print 'right'
     
   def keyEscape(self, event):
     root.quit()
-
     
+  #timer = 1, called by the timer,
+  #timer = 0, called by the key press
+  def moveDown(self, timer):
+    print "down"
+    if not timer:
+      self.cancel()
+    self._job = self.after(self.timer, self.moveDown, 1)
+
+  def keyDown(self, event):
+    self.moveDown(0)
+  
   def updateScore(self, score):
     self.score = score
     self.scoreBox.delete(1.0, END)
     self.scoreBox.insert(INSERT, "Score: " +  str(score))
+    
+  #cancels a current running "after" job
+  def cancel(self):
+    if self._job is not None:
+      root.after_cancel(self._job)
+      self._job = None
+    
     
 root = Tk()
 app = Application(master = root)
