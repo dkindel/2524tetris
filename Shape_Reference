@@ -2,11 +2,11 @@ Class:
 Shape
 
 Variables:
-chr _type	                    # stores the character of type: Z, S, L, I, O, J, T 
-int _orient                     # the orientation of the current shape, value can be 1-4
-int[4][4] _layout				# 4x4 matrix of the actual layout of the current shape (0 or 2, be consistent with Matrix)
-int _position_row					# x coordinate of the center, 0-14. original value is -1
-int _position_col   				# y coordinate of the center, 0-9. original value is -1
+chr _type	            # stores the character of type: Z, S, L, I, O, J, T 
+int _orient             # the orientation of the current shape, value can be 1-4
+_layout					# dictionary stores all possibilities of 4x4 matrix of the actual layout of the current shape (0 or 2, be 							# consistent with Matrix)
+int _position_row		# y coordinate of the center, 0-14. original value is -1
+int _position_col   	# x coordinate of the center, 0-9. original value is -1
 
 
 Methods:
@@ -29,8 +29,6 @@ void rotateCW()						# rotate the shape clockwise
 void rotateCC()						# rotate the shape conter-clockwise
 ##### shape related #####
 int[4][4] getLayout()				# return the actual 4x4 shape matrix
-##### PRIVATE METHOD #####
-void _update_layout()               # update the layout with _type and _orient
 
 
 shape layout:

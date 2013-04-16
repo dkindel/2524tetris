@@ -48,5 +48,4 @@ class Matrix:
 					self._matrix[i][j] = 1
 		return
 		
-m=Matrix()
-print m.getMatrix()
+
