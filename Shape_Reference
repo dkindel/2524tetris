@@ -2,10 +2,11 @@ Class:
 Shape
 
 Variables:
-enum(Z, S, L, I, O, J, T) _type	# stores the type of shape
-int[4][4] _shape				# the actual orientation of the current shape (0 or 2, be consistent with Matrix)
-int _position_x					# x coordinate of the center, 0-9
-int _position_y					# y coordinate of the center, 0-14
+chr _type	                    # stores the character of type: Z, S, L, I, O, J, T 
+int _orient                     # the orientation of the current shape, value can be 1-4
+int[4][4] _layout				# 4x4 matrix of the actual layout of the current shape (0 or 2, be consistent with Matrix)
+int _position_row					# x coordinate of the center, 0-14. original value is -1
+int _position_col   				# y coordinate of the center, 0-9. original value is -1
 
 
 Methods:
@@ -13,16 +14,32 @@ Methods:
 Shape()							# default constructor, type will be randomly selected on object constructing
 ##### type related #####
 char getType()					# return the char represent its type
-void selectType()					# randomly set a type
+void selectType()			    # randomly select a type and its orientation
 ##### position related #####
-int getX()						# return the value fo _position_x
-int getY()						# return the value fo _position_y
+int getRow()						# return the value for _position_row
+int getCol()						# return the value for _position_col
+void moveUp()
 void moveDown()					
 void moveRight()
 void moveLeft()
-void moveTo(int newX, int newY)	# set position with new values
+void moveTo(int newRow, int newCol)	# set position with new values, won't do anything if values are not int. This method does not
+									# check if the new values are within valid range
 ##### rotation related #####
 void rotateCW()						# rotate the shape clockwise
 void rotateCC()						# rotate the shape conter-clockwise
 ##### shape related #####
-int[4][4] getShape()				# return the actual 4x4 shape matrix
+int[4][4] getLayout()				# return the actual 4x4 shape matrix
+##### PRIVATE METHOD #####
+void _update_layout()               # update the layout with _type and _orient
+
+
+shape layout:
+
+		0	1	2	3
+	0
+
+	1
+
+	2
+
+	3

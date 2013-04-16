@@ -7,7 +7,7 @@ class Matrix:
 	
 	# return the value at the specified location. return -1 if x or y is invalid
 	def getValue(self, row, col):
-		if isinstance(row,int) and isinstance(col,int) and col >=0 and col <=10 and row>=0 and row<=15:
+		if isinstance(row,int) and isinstance(col,int) and col >=0 and col <=9 and row>=0 and row<=14:
 			return self._matrix[row][col]
 		else:
 			return -1
@@ -15,7 +15,7 @@ class Matrix:
 	# set the value at the specifed location. return a boolean. false if failed.		
 	def setValue(self, row, col, value):
 		if isinstance(row, int) and isinstance(col, int) and isinstance(value, int) \
-		and col >=0 and col <=10 and row>=0 and row<=15 and value >=0 and value <=2:
+		and col >=0 and col <=9 and row>=0 and row<=14 and value >=0 and value <=2:
 			self._matrix[row][col] = value
 			return True
 		else:
@@ -48,3 +48,5 @@ class Matrix:
 					self._matrix[i][j] = 1
 		return
 		
+m=Matrix()
+print m.getMatrix()
