@@ -49,9 +49,14 @@ class Shape:
 	}}
 	
 	def __init__(self):
-		self._position_row = -1
-		self._position_col = -1
 		self.selectType()
+		# initialize piece position
+		if self._type=='I' and (self._orient==2 or self._orient==4):
+			self._position_row = -2
+			self._position_col = 6
+		else:
+			self._position_row = -1
+			self._position_col = 6
 		
 	def getType(self):
 		return self._type
