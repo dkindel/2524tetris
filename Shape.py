@@ -1,6 +1,6 @@
 #!/usr/bin/python2
 # ECE 2524 Final Project - Tetris
-
+# http://www.colinfahey.com/tetris/tetris_diagram_pieces_orientations_new.jpg This is the refrence for the shapes
 import random
 
 class Shape:
@@ -49,23 +49,25 @@ class Shape:
 	}}
 	
 	def __init__(self):
-		self.resetShape()
-		
+		self._position_row = -3
+		self._position_col = 5
+		self.selectType()
+		#Checks if the type is anything but I and moves it down one
+		if self._type != 'I' or self._orient in [1, 3]:
+			self._position_row += 1
+			print "Not I"
+		#Then checks if if it is I and not orientation 2 or L J T in orientation is 3 I think in [L, J, T] works
+		if (self._type == 'I' and (self._orient in [1, 3])) or ((self._type in ['L', 'J', 'T']) and self._orient == 3):
+			self._position_row += 1
+			print "Other cases"
 	def getType(self):
 		return self._type
 		
-	def resetShape(self):
+	def selectType(self):
 		type_dict = {1:'Z', 2:'S', 3:'L', 4:'I', 5:'O', 6:'J', 7:'T'}
 		type_int = random.randint(1,7)
 		self._type = type_dict[type_int]
 		self._orient = random.randint(1,4)
-		# initialize piece position
-		if self._type=='I' and (self._orient==2 or self._orient==4):
-			self._position_row = -2
-			self._position_col = 6
-		else:
-			self._position_row = -1
-			self._position_col = 6
 	
 	def getRow(self):
 		return self._position_row
