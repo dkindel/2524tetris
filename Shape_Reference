@@ -11,10 +11,11 @@ int _position_col   	# x coordinate of the center, 0-9. original value is -1
 
 Methods:
 ##### constructor #####
-Shape()							# default constructor, type will be randomly selected on object constructing
+Shape()							# default constructor, type will be randomly selected on object constructing, position will be set
+								# to (-1, 6) if the shape is not a vertial "I" type, otherwise, (-2, 6) is used.
 ##### type related #####
 char getType()					# return the char represent its type
-void selectType()			    # randomly select a type and its orientation
+void resetShape()			    # re-initialize the Shape, give it new type, orientation and position depending on its type.
 ##### position related #####
 int getRow()						# return the value for _position_row
 int getCol()						# return the value for _position_col

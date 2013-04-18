@@ -49,18 +49,23 @@ class Shape:
 	}}
 	
 	def __init__(self):
-		self._position_row = -1
-		self._position_col = -1
-		self.selectType()
+		self.resetShape()
 		
 	def getType(self):
 		return self._type
 		
-	def selectType(self):
+	def resetShape(self):
 		type_dict = {1:'Z', 2:'S', 3:'L', 4:'I', 5:'O', 6:'J', 7:'T'}
 		type_int = random.randint(1,7)
 		self._type = type_dict[type_int]
 		self._orient = random.randint(1,4)
+		# initialize piece position
+		if self._type=='I' and (self._orient==2 or self._orient==4):
+			self._position_row = -2
+			self._position_col = 6
+		else:
+			self._position_row = -1
+			self._position_col = 6
 	
 	def getRow(self):
 		return self._position_row

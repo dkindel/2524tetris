@@ -36,7 +36,7 @@ for key in iter(sys.stdin.readline, ''):
 		s.moveRight()
 		printShape(s)
 	elif key == 'n\n':
-		s.selectType()
+		s.resetShape()
 		printShape(s)
 	elif key == 'e\n':
 		sys.exit(0)
