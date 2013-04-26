@@ -24,6 +24,11 @@ class Application(Frame):
 		self.initDraw()
 		self._CurShape = Shape.Shape()
 		self.board.delete("all")
+		root.bind_all('<Left>', self.moveLeft)
+		root.bind_all('<Right>', self.moveRight)
+		root.bind_all('<Down>', self.moveDown)
+		#root.bind_all('<Escape>', self.keyEscape)
+		root.bind_all('r', self.rotate)
 		for row in range(self._row):
 			for col in range(self._col):
 				x1 = col*self.sqSize
@@ -42,34 +47,84 @@ class Application(Frame):
 		self.board.pack()
 	def moveDown(self, timer):
 		print("moving down")
+		if self._job is not None:
+			root.after_cancel(self._job)
+			self._job = None
+		self.removeCurrent()
+		self._CurShape.moveDown()
+		setDone = self.redrawAfter()
+
+#If setDone is true, add the shape to a list so it can not be easily motified and call for a new piece to be generated in its spot
+		if setDone == 1:
+			self._Shapes.append(self._CurShape)
+			self.addNextShape()
+		self._job = self.after(2000, self.moveDown, 1)
+	def moveRight(self, event):
+		self.removeCurrent()
 		grid = self._CurShape.getLayout()
 		row = self._CurShape.getRow()
 		col = self._CurShape.getCol()
 		for y in range(row - 1, row + 3):
 			for x in range(col - 2, col + 2):
 				if grid[y - (row - 1)][x - (col - 2)] == 2:
-					self._Matrix.setValue(y, x, 0)
-		self._CurShape.moveDown()
+					if (self._Matrix.getValue(y, x + 1) == 1 or (x+1) >= 10):
+						self.redrawAfter()
+						return 0 
+		self._CurShape.moveRight()
+		done = self.redrawAfter()
+		if done == 1:
+			self._Shapes.append(self._CurShape)
+			self.addNextShape()
+	def moveLeft(self, event):
+		self.removeCurrent()
 		grid = self._CurShape.getLayout()
 		row = self._CurShape.getRow()
 		col = self._CurShape.getCol()
-		setDone = 0
+		for y in range(row - 1, row + 3):
+			for x in range(col - 2, col + 2):
+				if grid[y - (row - 1)][x - (col - 2)] == 2:
+					if (self._Matrix.getValue(y, x - 1) == 1 or x-1 < 0):
+						return 0 
+		self._CurShape.moveLeft()
+		done = self.redrawAfter()
+		if done == 1:
+			self._Shapes.append(self._CurShape)
+			self.addNextShape()
+	def rotate(self, event):
+		self.removeCurrent()
+		self._CurShape.rotateCW()
+		grid = self._CurShape.getLayout()
+		row = self._CurShape.getRow()
+		col = self._CurShape.getCol()
+		for y in range(row - 1, row + 3):
+			for x in range(col - 2, col + 2):
+				if grid[y - (row - 1)][x - (col - 2)] == 2:
+					if (self._Matrix.getValue(y, x) == 1 or x < 0 or x >= 15 or y < 0):
+						self._CurShape.rotateCC()
+						return 0 
+		done = self.redrawAfter()
+		if done == 1:
+			self._Shapes.append(self._CurShape)
+			self.addNextShape()
+	#def moveBottom(self):
+	def redrawAfter(self):
+		done = 0
+		grid = self._CurShape.getLayout()
+		row = self._CurShape.getRow()
+		col = self._CurShape.getCol()
 		#since the refrence point in Shape is at 2,2 on a 0 based grid, we set that to be 0,0. The for loops go through each box in the 4X4 grid
 		for y in range(row - 1, row + 3):
 			for x in range(col - 2, col + 2):
 #since grid is 0 based, we simply do some math. then check if the current coordinate has a 2 in it.
 				if grid[y - (row - 1)][x - (col - 2)] == 2:
 #if there is a 2 that means that peace will be moved, this next if statement checks if the value below our block is a stationary block or if the block is on the last block in the game field. If either is true, the block can not continue
-					if (self._Matrix.getValue(y + 1, x) == 1) or y == 14:
-						setDone = 1
-#Next two clear the old blocks and update to the new postion
 					self._Matrix.setValue(y, x, 1)
-#If setDone is true, add the shape to a list so it can not be easily motified and call for a new piece to be generated in its spot
-		if setDone == 1:
-			self._Shapes.append(self._CurShape)
-			self.addNextShape()
-		self._job = self.after(2000, self.moveDown, 1)
+					if (self._Matrix.getValue(y + 1, x) == 1) or y == 14:
+						done = 1
+#Next two clear the old blocks and update to the new postion
 		self.reDraw()
+		if done == 1:
+			return 1
 	def reDraw(self):
 		self.board.delete("all")
 		for row in range(self._row):
@@ -84,6 +139,14 @@ class Application(Frame):
 					self.board.create_rectangle(x1,y1,x2,y2, fill='orange')
 	def addNextShape(self):
 		self._CurShape = Shape.Shape()
+	def removeCurrent(self):
+		grid = self._CurShape.getLayout()
+		row = self._CurShape.getRow()
+		col = self._CurShape.getCol()
+		for y in range(row - 1, row + 3):
+			for x in range(col - 2, col + 2):
+				if grid[y - (row - 1)][x - (col - 2)] == 2:
+					self._Matrix.setValue(y, x, 0)
 root = Tk()
 app = Application(master = root)
 app.mainloop()	
