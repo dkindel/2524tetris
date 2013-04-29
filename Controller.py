@@ -15,8 +15,8 @@ class Application(Frame):
 		
 		
 		Frame.__init__(self, master)
-		self.boardHeight = 600
-		self.boardWidth = 400
+		self.boardHeight = 400
+		self.boardWidth = 250
 		self.difficulty = 2000
 		self.sqSize = 25
 		self.voidmove = 0
@@ -74,21 +74,25 @@ class Application(Frame):
 		print self.voidmove
 		print direction
 		self.removeCurrent()
+		if direction == 0:
+			self._CurShape.rotateCC()
                 grid = self._CurShape.getLayout()
                 row = self._CurShape.getRow()
                 col = self._CurShape.getCol()
+
+
                 for y in range(row - 1, row + 3):
                         for x in range(col - 2, col + 2):
                                 if grid[y - (row - 1)][x - (col - 2)] == 2:
                                         if (self._Matrix.getValue(y, x + direction) == 1 or x + direction < 0 or x + direction >= 10 or y < 0):
+						if direction == 0:
+							self._CurShape.rotateCW()
 						self.redrawAfter()
-						return 0;
+						return 0
 		if direction == 1:
 			self._CurShape.moveRight()
 		elif direction == -1:
 			self._CurShape.moveLeft()
-		else: #problem with rotate it is rotating when it shouldn't be able to
-			self._CurShape.rotateCC()
                 
 		self.redrawAfter()
 		
@@ -173,6 +177,7 @@ class Application(Frame):
 	def score(self, row_score):
 		print "\nrow score"
 		print row_score
+		self.score_count = self.score_count + 10
 		for row in range(row_score):
 			for col in range(self._col):
 				if row_score - row == 0:
