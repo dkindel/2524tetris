@@ -15,7 +15,7 @@ class Application(Frame):
 		
 		
 		Frame.__init__(self, master)
-		self.boardHeight = 400
+		self.boardHeight = 420
 		self.boardWidth = 250
 		self.difficulty = 1600
 		self.sqSize = 25
@@ -45,6 +45,8 @@ class Application(Frame):
 		self.board = Canvas(self, bg = 'gray', height = self.boardHeight, width = self.boardWidth, bd = 0)
 		self.scoreBox = Entry(self)
 		self.scoreBox.insert(0, "Score: " + str(self.score_count))
+		self.quitButton = Button(self, text = "Quit", bg = 'black', fg = 'white', command = self.quit)
+		self.quitButton.pack(side = BOTTOM)
 		self.scoreBox.pack(side = BOTTOM)
 		for row in range(self._row):
 			for col in range(self._col):
@@ -54,6 +56,7 @@ class Application(Frame):
 				y2 = y1 + self.sqSize
 				self.board.create_rectangle(x1,y1,x2,y2, fill='orange')
 		self.board.pack()
+		
 	def moveDown(self, timer):
 		print("moving down")
 		print self.voidmove
