@@ -17,20 +17,20 @@ class Application(Frame):
 		Frame.__init__(self, master)
 		self.boardHeight = 400
 		self.boardWidth = 250
-		self.difficulty = 2000
+		self.difficulty = 1600
 		self.sqSize = 25
 		self.voidmove = 0
 		self.score_count = 0
+		self.increaseDiff = 1
 		print("In init")
 		master.minsize(height = self.boardHeight+5, width = self.boardWidth+5)
 		master.maxsize(height = self.boardHeight+5, width = self.boardWidth+5)
 		master.title("Tetris!")
 		self.pack()
-		self.initDraw()
+		self.menu()
 		self._CurShape = Shape.Shape()
-		self.bindEvents()
 		
-		
+	
 	def bindEvents(self):
 		root.bind_all("<Left>", lambda event, arg = -1: self.moveLateral(event, arg))
 		root.bind_all("<Right>", lambda event, arg = 1: self.moveLateral(event, arg))
@@ -38,7 +38,6 @@ class Application(Frame):
 		root.bind_all('r', lambda event, arg = 0: self.moveLateral(event, arg))
 		root.bind_all('<Down>', self.moveDown)
 		#root.bind_all('<Escape>', self.keyEscape)
-		
 		self._job = self.after(self.difficulty, self.moveDown, 1)
 		
 	def initDraw(self):
@@ -70,7 +69,7 @@ class Application(Frame):
 		self.redrawAfter()
 
 #If setDone is true, add the shape to a list so it can not be easily motified and call for a new piece to be generated in its spot
-		self._job = self.after(2000, self.moveDown, 1)
+		self._job = self.after(self.difficulty, self.moveDown, 1)
 
 	def moveLateral(self, event, direction):
                 print "moving left or right"
@@ -210,6 +209,83 @@ class Application(Frame):
 		self.scoreBox.delete(0, END)
 		self.scoreBox.insert(0, "Score: " + str(self.score_count))
 		self.scoreBox.pack(side = BOTTOM)
+		
+		
+	def menu(self):
+		self.startGameButton = Button(self, text="Start Game", bg = 'black', fg = 'white', command = self.startGame)
+		self.quitButton = Button(self, text = "Quit", bg = 'black', fg = 'white', command = self.quit)
+		self.startGameButton.pack()
+		self.quitButton.pack()
+		
+	def startGame(self):
+		self.startGameButton.destroy()
+		self.quitButton.destroy()
+		
+		self.regButton = Button(self, text = "Increasing Difficulty", bg = 'black', fg = 'white', command = self.regPlay)
+		self.constButton = Button(self, text = "Constant Difficulty", bg = 'black', fg = 'white', command = self.constantPlay)
+		self.backToMainButton = Button(self, text = "<< Back", bg = 'black', fg = 'white', command = self.goBackToMain)
+		self.regButton.pack()
+		self.constButton.pack()
+		
+	def regPlay(self):
+		self.regButton.destroy()
+		self.constButton.destroy()
+		self.initDraw()
+		self.bindEvents()
+		
+	def constantPlay(self):
+		self.regButton.destroy()
+		self.constButton.destroy()
+		self.easyButton = Button(self, text = "Easy", bg = 'black', fg = 'white', command = self.setEasyDiff)
+		self.medButton = Button(self, text = "Medium", bg = 'black', fg = 'white', command = self.setMedDiff)
+		self.hardButton = Button(self, text = "Hard", bg = 'black', fg = 'white', command = self.setHardDiff)
+		self.backFromSetDiff = Button(self,text = "<< Back", bg = 'black', fg = 'white', command = self.goBackFromConst)
+		self.easyButton.pack()
+		self.medButton.pack()
+		self.hardButton.pack()
+		self.backFromSetDiff.pack()
+	
+	
+	def goBackFromConst(self):
+		self.easyButton.destroy()
+		self.medButton.destroy()
+		self.hardButton.destroy()
+		self.backFromSetDiff.destroy()
+		
+		self.regButton = Button(self, text = "Increasing Difficulty", bg = 'black', fg = 'white', command = self.regPlay)
+		self.constButton = Button(self, text = "Constant Difficulty", bg = 'black', fg = 'white', command = self.constantPlay)
+		self.backToMainButton = Button(self, text = "<< Back", bg = 'black', fg = 'white', command = self.goBackToMain)
+		self.regButton.pack()
+		self.constButton.pack()
+		self.backToMainButton.pack()
+		
+	def goBackToMain(self):
+		self.regButton.destroy()
+		self.constButton.destroy()
+		self.backToMainButton.destroy()
+		self.menu()
+		
+	def quit(self):
+		root.quit()
+		
+	def setEasyDiff(self):
+		self.difficulty = 1600
+		self.startConst()
+	def setMedDiff(self):
+		self.difficulty = 1000
+		self.startConst()
+	def setHardDiff(self):
+		self.difficulty = 400
+		self.startConst()
+		
+	def startConst(self):
+		self.easyButton.destroy()
+		self.medButton.destroy()
+		self.hardButton.destroy()
+		self.backFromSetDiff.destroy()
+		self.increaseDiff = 0
+		self.initDraw()
+		self.bindEvents()
 		
 root = Tk()
 app = Application(master = root)
