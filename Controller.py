@@ -20,6 +20,7 @@ class Application(Frame):
 		self.difficulty = 2000
 		self.sqSize = 25
 		self.voidmove = 0
+		self.score_count = 0
 		print("In init")
 		master.minsize(height = self.boardHeight+5, width = self.boardWidth+5)
 		master.maxsize(height = self.boardHeight+5, width = self.boardWidth+5)
@@ -48,7 +49,7 @@ class Application(Frame):
 		print "1"
 		self.board = Canvas(self, bg = 'gray', height = self.boardHeight, width = self.boardWidth, bd = 0)
 		self.scoreBox = Text(self, height=1)
-		self.scoreBox.insert(INSERT, "Score: " + str(0))
+		self.scoreBox.insert(INSERT, "Score: " + str(self.score_count))
 		self.scoreBox.pack(side = BOTTOM)
 		self.board.pack()
 	def moveDown(self, timer):
@@ -56,7 +57,7 @@ class Application(Frame):
 		print self.voidmove
 		if self.voidmove == 1:
                         self._Shapes.append(self._CurShape)
-                        self.addNextShape()
+                        self.turnOver()
 			
 		if self._job is not None:
 			root.after_cancel(self._job)
@@ -71,6 +72,7 @@ class Application(Frame):
 	def moveLateral(self, event, direction):
                 print "moving left or right"
 		print self.voidmove
+		print direction
 		self.removeCurrent()
                 grid = self._CurShape.getLayout()
                 row = self._CurShape.getRow()
@@ -79,14 +81,14 @@ class Application(Frame):
                         for x in range(col - 2, col + 2):
                                 if grid[y - (row - 1)][x - (col - 2)] == 2:
                                         if (self._Matrix.getValue(y, x + direction) == 1 or x + direction < 0 or x + direction >= 10 or y < 0):
-						if direction == 0:
-							self._CurShape.rotateCC()
 						self.redrawAfter()
 						return 0;
 		if direction == 1:
 			self._CurShape.moveRight()
-		else:
+		elif direction == -1:
 			self._CurShape.moveLeft()
+		else: #problem with rotate it is rotating when it shouldn't be able to
+			self._CurShape.rotateCC()
                 
 		self.redrawAfter()
 		
@@ -146,10 +148,45 @@ class Application(Frame):
 					self.board.create_rectangle(x1,y1,x2,y2, fill = 'blue')
 				else:
 					self.board.create_rectangle(x1,y1,x2,y2, fill='orange')
-	def addNextShape(self):
+	def turnOver(self):
+		print "turn over"
 		self.voidmove = 0
-		print "addNextShape"
+		self.checkBoardforScore()
 		self._CurShape = Shape.Shape()
+
+	def addNextShape(self):
+		print "addNextShape"
+		self.voidmove = 0
+				
+		self._CurShape = Shape.Shape()
+
+	def checkBoardforScore(self):
+		print "checkBoardforSchore"
+		for row in range(self._row):
+			col = 0
+			while col < self._col and self._Matrix.getValue(row, col) == 1: 
+				col = col +1
+			if col == self._col and self._Matrix.getValue(row, col-1) == 1:
+				self.score(row)
+
+
+	def score(self, row_score):
+		print "\nrow score"
+		print row_score
+		for row in range(row_score):
+			for col in range(self._col):
+				if row_score - row == 0:
+					self._Matrix.setValue(0, col, 0)
+				else:
+					temp = self._Matrix.getValue(row_score - (row+1), col)
+					self._Matrix.setValue(row_score - row, col, temp)
+		
+		self.reDraw()		
+		#self.initDraw()		
+		
+
+
+
 	def removeCurrent(self):
 		print "remove Current"
 		grid = self._CurShape.getLayout()
