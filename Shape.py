@@ -49,6 +49,7 @@ class Shape:
 	}}
 	
 	def __init__(self):
+		print "shape class\n"
 		self._position_row = -3
 		self._position_col = 5
 		self.selectType()
@@ -64,6 +65,7 @@ class Shape:
 		return self._type
 		
 	def selectType(self):
+		print "selectType"
 		type_dict = {1:'Z', 2:'S', 3:'L', 4:'I', 5:'O', 6:'J', 7:'T'}
 		type_int = random.randint(1,7)
 		self._type = type_dict[type_int]
