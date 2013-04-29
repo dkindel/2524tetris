@@ -5,6 +5,7 @@
 import Shape
 import Matrix
 from Tkinter import *
+import sys
 
 class Application(Frame):
 	_Matrix = Matrix.Matrix()
@@ -23,7 +24,7 @@ class Application(Frame):
 		self.pack()
 		self.initDraw()
 		self._CurShape = Shape.Shape()
-		self.board.delete("all")
+		#self.board.delete("all")
 		root.bind_all('<Left>', self.moveLeft)
 		root.bind_all('<Right>', self.moveRight)
 		root.bind_all('<Down>', self.moveDown)
@@ -139,6 +140,19 @@ class Application(Frame):
 					self.board.create_rectangle(x1,y1,x2,y2, fill='orange')
 	def addNextShape(self):
 		self._CurShape = Shape.Shape()
+		self.checkBoard()
+	def checkBoard(self):
+		remove = []
+		matrix = self._Matrix.getMatrix()
+		check = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+		print matrix[14]
+		for i in range(15):
+			if matrix[i] == check:
+				remove.append(i)
+		if len(remove) > 0:
+			for i in range(len(remove)):
+				self._Matrix.removeRow(remove[i])
+			self.reDraw()
 	def removeCurrent(self):
 		grid = self._CurShape.getLayout()
 		row = self._CurShape.getRow()
@@ -147,7 +161,11 @@ class Application(Frame):
 			for x in range(col - 2, col + 2):
 				if grid[y - (row - 1)][x - (col - 2)] == 2:
 					self._Matrix.setValue(y, x, 0)
+#	def __del__(self):
+#		if self._job is not None:
+#			root.after_cancel(self._job)
+#			self._job = None
 root = Tk()
 app = Application(master = root)
-app.mainloop()	
-										
+app.mainloop()
+root.destroy()	
