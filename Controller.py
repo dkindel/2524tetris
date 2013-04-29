@@ -30,8 +30,8 @@ class Application(Frame):
 		self._CurShape = Shape.Shape()
 		print "5"
 		self.board.delete("all")
-		root.bind_all('<Left>', self.moveLeft)
-		root.bind_all('<Right>', self.moveRight)
+		root.bind_all("<Left>", lambda event, arg = -1: self.moveLateral(event, arg))
+		root.bind_all("<Right>", lambda event, arg = 1: self.moveLateral(event, arg))
 		root.bind_all('<Down>', self.moveDown)
 		#root.bind_all('<Escape>', self.keyEscape)
 		root.bind_all('r', self.rotate)
@@ -69,35 +69,26 @@ class Application(Frame):
 
 #If setDone is true, add the shape to a list so it can not be easily motified and call for a new piece to be generated in its spot
 		self._job = self.after(2000, self.moveDown, 1)
-	def moveRight(self, event):
-		print "right"
-		self.removeCurrent()
-		grid = self._CurShape.getLayout()
-		row = self._CurShape.getRow()
-		col = self._CurShape.getCol()
-		for y in range(row - 1, row + 3):
-			for x in range(col - 2, col + 2):
-				if grid[y - (row - 1)][x - (col - 2)] == 2:
-					if (self._Matrix.getValue(y, x + 1) == 1 or (x+1) >= 10):
-						self.redrawAfter()
-						return 0 
-		self._CurShape.moveRight()
-		self.redrawAfter()
 
-	def moveLeft(self, event):
-		print "left"
-		self.removeCurrent()
-		grid = self._CurShape.getLayout()
-		row = self._CurShape.getRow()
-		col = self._CurShape.getCol()
-		for y in range(row - 1, row + 3):
-			for x in range(col - 2, col + 2):
-				if grid[y - (row - 1)][x - (col - 2)] == 2:
-					if (self._Matrix.getValue(y, x - 1) == 1 or x-1 < 0):
-						return 0 
-		self._CurShape.moveLeft()
+	def moveLateral(self, event, direction):
+                print direction
+                self.removeCurrent()
+                grid = self._CurShape.getLayout()
+                row = self._CurShape.getRow()
+                col = self._CurShape.getCol()
+                for y in range(row - 1, row + 3):
+                        for x in range(col - 2, col + 2):
+                                if grid[y - (row - 1)][x - (col - 2)] == 2:
+                                        if (self._Matrix.getValue(y, x + direction) == 1 or x + direction < 0 or x + direction >= 10):
+		                                return 0
+                if direction == 1:
+			self._CurShape.moveRight()
+		else:
+			self._CurShape.moveLeft()
+                
 		self.redrawAfter()
-
+		
+	
 	def rotate(self, event):
 		self.removeCurrent()
 		self._CurShape.rotateCW()
