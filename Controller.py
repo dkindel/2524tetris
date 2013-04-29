@@ -26,16 +26,14 @@ class Application(Frame):
 		master.title("Tetris!")
 		self.pack()
 		self.initDraw()
-		print "2"
 		self._CurShape = Shape.Shape()
-		print "5"
 		self.board.delete("all")
 		root.bind_all("<Left>", lambda event, arg = -1: self.moveLateral(event, arg))
 		root.bind_all("<Right>", lambda event, arg = 1: self.moveLateral(event, arg))
+                root.bind_all("<Up>", lambda event, arg = 0: self.moveLateral(event, arg))
+                root.bind_all('r', lambda event, arg = 0: self.moveLateral(event, arg))
 		root.bind_all('<Down>', self.moveDown)
 		#root.bind_all('<Escape>', self.keyEscape)
-		root.bind_all('r', self.rotate)
-		root.bind_all('<Up>', self.rotate)
 		for row in range(self._row):
 			for col in range(self._col):
 				x1 = col*self.sqSize
@@ -55,7 +53,7 @@ class Application(Frame):
 		self.board.pack()
 	def moveDown(self, timer):
 		print("moving down")
-
+		print self.voidmove
 		if self.voidmove == 1:
                         self._Shapes.append(self._CurShape)
                         self.addNextShape()
@@ -71,17 +69,21 @@ class Application(Frame):
 		self._job = self.after(2000, self.moveDown, 1)
 
 	def moveLateral(self, event, direction):
-                print direction
-                self.removeCurrent()
+                print "moving left or right"
+		print self.voidmove
+		self.removeCurrent()
                 grid = self._CurShape.getLayout()
                 row = self._CurShape.getRow()
                 col = self._CurShape.getCol()
                 for y in range(row - 1, row + 3):
                         for x in range(col - 2, col + 2):
                                 if grid[y - (row - 1)][x - (col - 2)] == 2:
-                                        if (self._Matrix.getValue(y, x + direction) == 1 or x + direction < 0 or x + direction >= 10):
-		                                return 0
-                if direction == 1:
+                                        if (self._Matrix.getValue(y, x + direction) == 1 or x + direction < 0 or x + direction >= 10 or y < 0):
+						if direction == 0:
+							self._CurShape.rotateCC()
+						self.redrawAfter()
+						return 0;
+		if direction == 1:
 			self._CurShape.moveRight()
 		else:
 			self._CurShape.moveLeft()
@@ -90,6 +92,11 @@ class Application(Frame):
 		
 	
 	def rotate(self, event):
+		print "rotate"
+		print self.voidmove
+                if not self.voidmove:
+                        self.removeCurrent()
+
 		self.removeCurrent()
 		self._CurShape.rotateCW()
 		grid = self._CurShape.getLayout()
@@ -98,7 +105,7 @@ class Application(Frame):
 		for y in range(row - 1, row + 3):
 			for x in range(col - 2, col + 2):
 				if grid[y - (row - 1)][x - (col - 2)] == 2:
-					if (self._Matrix.getValue(y, x) == 1 or x < 0 or x >= 15 or y < 0):
+					if (self._Matrix.getValue(y, x) == 1 or x < 0 or x >= 10 or y < 0):
 						self._CurShape.rotateCC()
 						return 0 
 		self.redrawAfter()
