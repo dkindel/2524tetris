@@ -67,7 +67,7 @@ class Application(Frame):
 		self.removeCurrent()
 		self._CurShape.moveDown()
 		self.redrawAfter()
-
+		print self.difficulty
 #If setDone is true, add the shape to a list so it can not be easily motified and call for a new piece to be generated in its spot
 		self._job = self.after(self.difficulty, self.moveDown, 1)
 
@@ -190,6 +190,13 @@ class Application(Frame):
 		
 		self.reDraw()		
 		self.updateScoreBox()
+		self.updateDifficulty()
+		
+	def updateDifficulty(self):
+		if(self.increaseDiff and self.difficulty > 400):
+			self.difficulty = int(self.difficulty*.9)
+			if(self.difficulty < 400):
+				self.difficulty = 400
 		
 
 
