@@ -28,13 +28,25 @@ class Application(Frame):
 		self.pack()
 		self.initDraw()
 		self._CurShape = Shape.Shape()
-		self.board.delete("all")
+		self.bindEvents()
+		
+		
+	def bindEvents(self):
 		root.bind_all("<Left>", lambda event, arg = -1: self.moveLateral(event, arg))
 		root.bind_all("<Right>", lambda event, arg = 1: self.moveLateral(event, arg))
-                root.bind_all("<Up>", lambda event, arg = 0: self.moveLateral(event, arg))
-                root.bind_all('r', lambda event, arg = 0: self.moveLateral(event, arg))
+		root.bind_all("<Up>", lambda event, arg = 0: self.moveLateral(event, arg))
+		root.bind_all('r', lambda event, arg = 0: self.moveLateral(event, arg))
 		root.bind_all('<Down>', self.moveDown)
 		#root.bind_all('<Escape>', self.keyEscape)
+		
+		self._job = self.after(self.difficulty, self.moveDown, 1)
+		
+	def initDraw(self):
+		print "1"
+		self.board = Canvas(self, bg = 'gray', height = self.boardHeight, width = self.boardWidth, bd = 0)
+		self.scoreBox = Entry(self)
+		self.scoreBox.insert(0, "Score: " + str(self.score_count))
+		self.scoreBox.pack(side = BOTTOM)
 		for row in range(self._row):
 			for col in range(self._col):
 				x1 = col*self.sqSize
@@ -42,15 +54,6 @@ class Application(Frame):
 				x2 = x1+self.sqSize
 				y2 = y1 + self.sqSize
 				self.board.create_rectangle(x1,y1,x2,y2, fill='orange')
-
-		self.board.pack()
-		self._job = self.after(self.difficulty, self.moveDown, 1)
-	def initDraw(self):
-		print "1"
-		self.board = Canvas(self, bg = 'gray', height = self.boardHeight, width = self.boardWidth, bd = 0)
-		self.scoreBox = Entry(self)
-		self.scoreBox.insert(0, "Score: " + str(self.score_count))
-		self.scoreBox.pack(side = BOTTOM)
 		self.board.pack()
 	def moveDown(self, timer):
 		print("moving down")
