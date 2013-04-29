@@ -48,8 +48,8 @@ class Application(Frame):
 	def initDraw(self):
 		print "1"
 		self.board = Canvas(self, bg = 'gray', height = self.boardHeight, width = self.boardWidth, bd = 0)
-		self.scoreBox = Text(self, height=1)
-		self.scoreBox.insert(INSERT, "Score: " + str(self.score_count))
+		self.scoreBox = Entry(self)
+		self.scoreBox.insert(0, "Score: " + str(self.score_count))
 		self.scoreBox.pack(side = BOTTOM)
 		self.board.pack()
 	def moveDown(self, timer):
@@ -187,7 +187,7 @@ class Application(Frame):
 					self._Matrix.setValue(row_score - row, col, temp)
 		
 		self.reDraw()		
-		#self.initDraw()		
+		self.updateScoreBox()
 		
 
 
@@ -201,6 +201,13 @@ class Application(Frame):
 			for x in range(col - 2, col + 2):
 				if grid[y - (row - 1)][x - (col - 2)] == 2:
 					self._Matrix.setValue(y, x, 0)
+					
+	def updateScoreBox(self):
+		print "updating"
+		self.scoreBox.delete(0, END)
+		self.scoreBox.insert(0, "Score: " + str(self.score_count))
+		self.scoreBox.pack(side = BOTTOM)
+		
 root = Tk()
 app = Application(master = root)
 app.mainloop()	
