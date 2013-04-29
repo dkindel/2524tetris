@@ -48,4 +48,12 @@ class Matrix:
 					self._matrix[i][j] = 1
 		return
 		
-
+	def removeRow(self, location):
+		print "trying to del" + str(location)
+		for y in range(location, -1, -1):
+			for x in range(10):
+				if y == 0:
+					self._matrix[y][x] = 0
+				else:
+					self._matrix[y][x] = self._matrix[y-1][x]
+			
