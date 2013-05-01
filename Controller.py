@@ -13,7 +13,7 @@ class Application(Frame):
 	_col = 10
 	def __init__(self, master=None):
 		
-		
+		self.master = master	
 		Frame.__init__(self, master)
 		self.boardHeight = 420
 		self.boardWidth = 250
@@ -32,11 +32,11 @@ class Application(Frame):
 		
 	
 	def bindEvents(self):
-		root.bind_all("<Left>", lambda event, arg = -1: self.moveLateral(event, arg))
-		root.bind_all("<Right>", lambda event, arg = 1: self.moveLateral(event, arg))
-		root.bind_all("<Up>", lambda event, arg = 0: self.moveLateral(event, arg))
-		root.bind_all('r', lambda event, arg = 0: self.moveLateral(event, arg))
-		root.bind_all('<Down>', self.moveDown)
+		self.master.bind_all("<Left>", lambda event, arg = -1: self.moveLateral(event, arg))
+		self.master.bind_all("<Right>", lambda event, arg = 1: self.moveLateral(event, arg))
+		self.master.bind_all("<Up>", lambda event, arg = 0: self.moveLateral(event, arg))
+		self.master.bind_all('r', lambda event, arg = 0: self.moveLateral(event, arg))
+		self.master.bind_all('<Down>', self.moveDown)
 		#root.bind_all('<Escape>', self.keyEscape)
 		self._job = self.after(self.difficulty, self.moveDown, 1)
 		
@@ -65,7 +65,7 @@ class Application(Frame):
                         self.turnOver()
 			
 		if self._job is not None:
-			root.after_cancel(self._job)
+			self.after_cancel(self._job)
 			self._job = None
 		self.removeCurrent()
 		self._CurShape.moveDown()
@@ -276,7 +276,7 @@ class Application(Frame):
 		self.menu()
 		
 	def quit(self):
-		root.quit()
+		self.master.quit()
 		
 	def setEasyDiff(self):
 		self.difficulty = 1600
@@ -296,8 +296,11 @@ class Application(Frame):
 		self.increaseDiff = 0
 		self.initDraw()
 		self.bindEvents()
-		
-root = Tk()
-app = Application(master = root)
-app.mainloop()	
-										
+def main():
+	root = Tk()
+	app = Application(master = root)
+	app.mainloop()
+	return 0
+	
+if __name__ == "__main__":
+	sys.exit(main())									
