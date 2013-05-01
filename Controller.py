@@ -21,7 +21,6 @@ class Application(Frame):
 		self.sqSize = 25
 		self.voidmove = 0
 		self.score_count = 0
-		print("In init")
 		master.minsize(height = self.boardHeight+5, width = self.boardWidth+5)
 		master.maxsize(height = self.boardHeight+5, width = self.boardWidth+5)
 		master.title("Tetris!")
@@ -46,15 +45,12 @@ class Application(Frame):
 		self.board.pack()
 		self._job = self.after(self.difficulty, self.moveDown, 1)
 	def initDraw(self):
-		print "1"
 		self.board = Canvas(self, bg = 'gray', height = self.boardHeight, width = self.boardWidth, bd = 0)
 		self.scoreBox = Text(self, height=1)
 		self.scoreBox.insert(INSERT, "Score: " + str(self.score_count))
 		self.scoreBox.pack(side = BOTTOM)
 		self.board.pack()
 	def moveDown(self, timer):
-		print("moving down")
-		print self.voidmove
 		if self.voidmove == 1:
                         self._Shapes.append(self._CurShape)
                         self.turnOver()
@@ -67,12 +63,9 @@ class Application(Frame):
 		self.redrawAfter()
 
 #If setDone is true, add the shape to a list so it can not be easily motified and call for a new piece to be generated in its spot
-		self._job = self.after(2000, self.moveDown, 1)
+		self._job = self.after(self.difficulty, self.moveDown, 1)
 
 	def moveLateral(self, event, direction):
-                print "moving left or right"
-		print self.voidmove
-		print direction
 		self.removeCurrent()
 		if direction == 0:
 			self._CurShape.rotateCC()
@@ -97,28 +90,9 @@ class Application(Frame):
 		self.redrawAfter()
 		
 	
-	def rotate(self, event):
-		print "rotate"
-		print self.voidmove
-                if not self.voidmove:
-                        self.removeCurrent()
-
-		self.removeCurrent()
-		self._CurShape.rotateCW()
-		grid = self._CurShape.getLayout()
-		row = self._CurShape.getRow()
-		col = self._CurShape.getCol()
-		for y in range(row - 1, row + 3):
-			for x in range(col - 2, col + 2):
-				if grid[y - (row - 1)][x - (col - 2)] == 2:
-					if (self._Matrix.getValue(y, x) == 1 or x < 0 or x >= 10 or y < 0):
-						self._CurShape.rotateCC()
-						return 0 
-		self.redrawAfter()
 
 	#def moveBottom(self):
 	def redrawAfter(self):
-		print "redrawAfter"
 		
 		grid = self._CurShape.getLayout()
 		row = self._CurShape.getRow()
@@ -140,7 +114,6 @@ class Application(Frame):
 		self.reDraw()
 		
 	def reDraw(self):
-		print "reDraw"
 		self.board.delete("all")
 		for row in range(self._row):
 			for col in range(self._col):
@@ -156,16 +129,26 @@ class Application(Frame):
 		print "turn over"
 		self.voidmove = 0
 		self.checkBoardforScore()
+
+                grid = self._CurShape.getLayout()
+                row = self._CurShape.getRow()
+                col = self._CurShape.getCol()
+
+
+                for y in range(row - 1, row + 3):
+                        for x in range(col - 2, col + 2):
+                                if grid[y - (row - 1)][x - (col - 2)] == 2:
+					if self._Matrix.getValue(y, x) == -1:
+						print "\n \n GAME OVER \n \n"
 		self._CurShape = Shape.Shape()
 
-	def addNextShape(self):
-		print "addNextShape"
-		self.voidmove = 0
-				
-		self._CurShape = Shape.Shape()
+
+
+
+
+
 
 	def checkBoardforScore(self):
-		print "checkBoardforSchore"
 		for row in range(self._row):
 			col = 0
 			while col < self._col and self._Matrix.getValue(row, col) == 1: 
@@ -175,8 +158,6 @@ class Application(Frame):
 
 
 	def score(self, row_score):
-		print "\nrow score"
-		print row_score
 		self.score_count = self.score_count + 10
 		for row in range(row_score):
 			for col in range(self._col):
@@ -186,14 +167,13 @@ class Application(Frame):
 					temp = self._Matrix.getValue(row_score - (row+1), col)
 					self._Matrix.setValue(row_score - row, col, temp)
 		
-		self.reDraw()		
-		#self.initDraw()		
+		self.reDraw()
+		self.difficulty = int(self.difficulty * .9)		
 		
 
 
 
 	def removeCurrent(self):
-		print "remove Current"
 		grid = self._CurShape.getLayout()
 		row = self._CurShape.getRow()
 		col = self._CurShape.getCol()
