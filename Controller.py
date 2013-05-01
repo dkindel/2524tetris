@@ -138,7 +138,7 @@ class Application(Frame):
                 for y in range(row - 1, row + 3):
                         for x in range(col - 2, col + 2):
                                 if grid[y - (row - 1)][x - (col - 2)] == 2:
-					if y >= 15:
+					if self._Matrix.getValue(y, x) == -1:
 						print "\n \n GAME OVER \n \n"
 		self._CurShape = Shape.Shape()
 
@@ -169,7 +169,6 @@ class Application(Frame):
 		
 		self.reDraw()
 		self.difficulty = int(self.difficulty * .9)		
-		#self.initDraw()		
 		
 
 
