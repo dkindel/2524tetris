@@ -41,11 +41,10 @@ class Matrix:
 		return True
 	
 	# set all 2's to value 1	
-	def clear2s(self):
+	def clear(self):
 		for i in range(15):
 			for j in range(10):
-				if self._matrix[i][j] == 2:
-					self._matrix[i][j] = 1
+				self._matrix[i][j] = 0
 		return
 		
 	def removeRow(self, location):

@@ -7,12 +7,11 @@ import Matrix
 from Tkinter import *
 
 class Application(Frame):
-	_Matrix = Matrix.Matrix()
 	_Shapes = []
 	_row = 15
 	_col = 10
 	def __init__(self, master=None):
-		
+		self._Matrix = Matrix.Matrix()
 		self.master = master	
 		Frame.__init__(self, master)
 		self.boardHeight = 420
@@ -40,14 +39,15 @@ class Application(Frame):
 		self.master.bind_all('<space>', self.moveBottom)
 		self._job = self.after(self.difficulty, self.moveDown, 1)
 		
-	def initDraw(self):
-		print "1"
-		self.board = Canvas(self, bg = 'gray', height = self.boardHeight, width = self.boardWidth, bd = 0)
-		self.scoreBox = Entry(self)
+	def initDraw(self, init = 1):
+		if init == 1:
+			self.board = Canvas(self, bg = 'gray', height = self.boardHeight, width = self.boardWidth, bd = 0)
+			self.scoreBox = Entry(self)
+			self.quitButton = Button(self, text = "Quit", bg = 'black', fg = 'white', command = self.quit)
+			self.quitButton.pack(side = BOTTOM)
+			self.scoreBox.pack(side = BOTTOM)
+		self.scoreBox.delete(0, END)
 		self.scoreBox.insert(0, "Score: " + str(self.score_count))
-		self.quitButton = Button(self, text = "Quit", bg = 'black', fg = 'white', command = self.quit)
-		self.quitButton.pack(side = BOTTOM)
-		self.scoreBox.pack(side = BOTTOM)
 		for row in range(self._row):
 			for col in range(self._col):
 				x1 = col*self.sqSize
@@ -59,22 +59,23 @@ class Application(Frame):
 		self.board.pack()
 		
 	def moveDown(self, timer):
+		if self._job is not None:
+			self.after_cancel(self._job)
+			self._job = None
+		self._job = self.after(self.difficulty, self.moveDown, 1)
 		if self.voidmove == 1:
                         self._Shapes.append(self._CurShape)
                         self.turnOver()
 			ret = 0
 		else:
 			ret = 1	
-		if self._job is not None:
-			self.after_cancel(self._job)
-			self._job = None
+
 		self.removeCurrent()
 		self._CurShape.moveDown()
 		self.redrawAfter()
 		print self.difficulty
 #If setDone is true, add the shape to a list so it can not be easily motified and call for a new piece to be generated in its spot
-		if self.voidmove == 0:
-			self._job = self.after(self.difficulty, self.moveDown, 1)
+		
 		return ret
 
 	def moveLateral(self, event, direction):
@@ -106,7 +107,7 @@ class Application(Frame):
 		move = self.moveDown(None)
 		while(move == 1):
 			move = self.moveDown(None)
-		self._job = self.after(self.difficulty, self.moveDown, 1)
+
 	def redrawAfter(self):
 		
 		grid = self._CurShape.getLayout()
@@ -155,6 +156,9 @@ class Application(Frame):
                                 if grid[y - (row - 1)][x - (col - 2)] == 2:
 					if self._Matrix.getValue(y, x) == -1:
 						print "\n \n GAME OVER \n \n"
+						if self._job is not None:
+							self.after_cancel(self._job)
+							self._job = None
 						self.gameOver(None)
 		self._CurShape = Shape.Shape()
 
@@ -177,6 +181,9 @@ class Application(Frame):
 
 	def gameOver(self, timer):
 		if timer is None:
+			if self._job is not None:
+				self.after_cancel(self._job)
+				self._job = None
 			for row in range(self._row):
 				for col in range(self._col):
 					if (self._Matrix.getValue(row, col) == 1):
@@ -184,19 +191,37 @@ class Application(Frame):
 			self.scoreBox.delete(0, END)
 			self.scoreBox.insert(0, "GAME OVER, Score: " + str(self.score_count))
 			self.scoreBox.pack(side = BOTTOM)
-			self.after(3000, self.gameOver, 1)
+			self.after(2000, self.gameOver, 1)
 		else:
 			self._reset = Button(self, text = "reset", command = self.reset, bg = 'black', fg = 'white', anchor=CENTER)
-			self._reset.configure(width = 20)
-			resetWind = self.board.create_window(20,20, window = self._reset, anchor=CENTER)
+			self._reset.configure(width = 10)
+			self._home = Button(self, text= "Home", command = self.home, bg = 'black', fg = 'white', anchor=CENTER)
+			self._home.configure(width = 10)
+			resetWind = self.board.create_window(125,190, window = self._reset, anchor=CENTER)
+			goHome = self.board.create_window(125,220, window = self._home)
+			self.board.pack()
+
+	def home(self):
+		self.scoreBox.destroy()
+		self.quitButton.destroy()
+		self._Matrix.clear()
+		self._CurShape = Shape.Shape()
+		self._Shapes = []
+		self.score_count = 0
+		self.voidmove = 0
+		self.difficulty = 1600
+		self.board.delete("all")
+		self.board.destroy()
+		self.menu()
 
 	def reset(self, event=None):
-		self._Matrix = Matrix.Matrix()
+		self._Matrix.clear()
 		self._CurShape = Shape.Shape()
-		self._shapes = []
+		self._Shapes = []
 		self.score_count = 0
 		self.board.delete("all")
-		self.initDraw()
+		self.initDraw(0)
+		self.voidmove = 0
 		self.difficulty = 1600
 		self._job = self.after(self.difficulty, self.moveDown, 1) 
 	def score(self, row_score):
