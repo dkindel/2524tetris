@@ -66,16 +66,16 @@ class Shape:
 		#Checks if the type is anything but I and moves it down one
 		if self._type != 'I' or self._orient in [1, 3]:
 			self._position_row += 1
-			print "Not I"
+			#print "Not I"
 		#Then checks if if it is I and not orientation 2 or L J T in orientation is 3 I think in [L, J, T] works
 		if (self._type == 'I' and (self._orient in [1, 3])) or ((self._type in ['L', 'J', 'T']) and self._orient == 3):
 			self._position_row += 1
-			print "Other cases"
+			#print "Other cases"
 	def getType(self):
 		return self._type
 		
 	def selectType(self):
-		print "selectType"
+		#print "selectType"
 		type_dict = {1:'Z', 2:'S', 3:'L', 4:'I', 5:'O', 6:'J', 7:'T'}
 		type_int = random.randint(1,7)
 		self._type = type_dict[type_int]
@@ -116,6 +116,3 @@ class Shape:
 			
 	def getLayout(self):
 		return self._layout[self._type][self._orient]
-			
-
-		

@@ -37,7 +37,7 @@ class Application(Frame):
 		self.master.bind_all("<Up>", lambda event, arg = 0: self.moveLateral(event, arg))
 		self.master.bind_all('r', lambda event, arg = 0: self.moveLateral(event, arg))
 		self.master.bind_all('<Down>', self.moveDown)
-		#root.bind_all('<Escape>', self.keyEscape)
+		self.master.bind_all('<space>', self.moveBottom)
 		self._job = self.after(self.difficulty, self.moveDown, 1)
 		
 	def initDraw(self):
@@ -55,15 +55,16 @@ class Application(Frame):
 				x2 = x1+self.sqSize
 				y2 = y1 + self.sqSize
 				self.board.create_rectangle(x1,y1,x2,y2, fill='orange')
+
 		self.board.pack()
 		
 	def moveDown(self, timer):
-		print("moving down")
-		print self.voidmove
 		if self.voidmove == 1:
                         self._Shapes.append(self._CurShape)
                         self.turnOver()
-			
+			ret = 0
+		else:
+			ret = 1	
 		if self._job is not None:
 			self.after_cancel(self._job)
 			self._job = None
@@ -72,12 +73,11 @@ class Application(Frame):
 		self.redrawAfter()
 		print self.difficulty
 #If setDone is true, add the shape to a list so it can not be easily motified and call for a new piece to be generated in its spot
-		self._job = self.after(self.difficulty, self.moveDown, 1)
+		if self.voidmove == 0:
+			self._job = self.after(self.difficulty, self.moveDown, 1)
+		return ret
 
 	def moveLateral(self, event, direction):
-                print "moving left or right"
-		print self.voidmove
-		print direction
 		self.removeCurrent()
 		if direction == 0:
 			self._CurShape.rotateCC()
@@ -89,7 +89,7 @@ class Application(Frame):
                 for y in range(row - 1, row + 3):
                         for x in range(col - 2, col + 2):
                                 if grid[y - (row - 1)][x - (col - 2)] == 2:
-                                        if (self._Matrix.getValue(y, x + direction) == 1 or x + direction < 0 or x + direction >= 10 or y < 0):
+                                        if (self._Matrix.getValue(y, x + direction) == 1 or x + direction < 0 or x + direction >= 10 ):
 						if direction == 0:
 							self._CurShape.rotateCW()
 						self.redrawAfter()
@@ -102,28 +102,12 @@ class Application(Frame):
 		self.redrawAfter()
 		
 	
-	def rotate(self, event):
-		print "rotate"
-		print self.voidmove
-                if not self.voidmove:
-                        self.removeCurrent()
-
-		self.removeCurrent()
-		self._CurShape.rotateCW()
-		grid = self._CurShape.getLayout()
-		row = self._CurShape.getRow()
-		col = self._CurShape.getCol()
-		for y in range(row - 1, row + 3):
-			for x in range(col - 2, col + 2):
-				if grid[y - (row - 1)][x - (col - 2)] == 2:
-					if (self._Matrix.getValue(y, x) == 1 or x < 0 or x >= 10 or y < 0):
-						self._CurShape.rotateCC()
-						return 0 
-		self.redrawAfter()
-
-	#def moveBottom(self):
+	def moveBottom(self, event):
+		move = self.moveDown(None)
+		while(move == 1):
+			move = self.moveDown(None)
+		self._job = self.after(self.difficulty, self.moveDown, 1)
 	def redrawAfter(self):
-		print "redrawAfter"
 		
 		grid = self._CurShape.getLayout()
 		row = self._CurShape.getRow()
@@ -145,7 +129,6 @@ class Application(Frame):
 		self.reDraw()
 		
 	def reDraw(self):
-		print "reDraw"
 		self.board.delete("all")
 		for row in range(self._row):
 			for col in range(self._col):
@@ -161,6 +144,18 @@ class Application(Frame):
 		print "turn over"
 		self.voidmove = 0
 		self.checkBoardforScore()
+
+                grid = self._CurShape.getLayout()
+                row = self._CurShape.getRow()
+                col = self._CurShape.getCol()
+
+
+                for y in range(row - 1, row + 3):
+                        for x in range(col - 2, col + 2):
+                                if grid[y - (row - 1)][x - (col - 2)] == 2:
+					if self._Matrix.getValue(y, x) == -1:
+						print "\n \n GAME OVER \n \n"
+						self.gameOver(None)
 		self._CurShape = Shape.Shape()
 
 	def addNextShape(self):
@@ -169,8 +164,10 @@ class Application(Frame):
 				
 		self._CurShape = Shape.Shape()
 
+
+
+
 	def checkBoardforScore(self):
-		print "checkBoardforSchore"
 		for row in range(self._row):
 			col = 0
 			while col < self._col and self._Matrix.getValue(row, col) == 1: 
@@ -178,10 +175,31 @@ class Application(Frame):
 			if col == self._col and self._Matrix.getValue(row, col-1) == 1:
 				self.score(row)
 
+	def gameOver(self, timer):
+		if timer is None:
+			for row in range(self._row):
+				for col in range(self._col):
+					if (self._Matrix.getValue(row, col) == 1):
+						self.board.create_rectangle(col*self.sqSize,row*self.sqSize, col*self.sqSize + self.sqSize, col*self.sqSize + self.sqSize, fill='red')
+			self.scoreBox.delete(0, END)
+			self.scoreBox.insert(0, "GAME OVER, Score: " + str(self.score_count))
+			self.scoreBox.pack(side = BOTTOM)
+			self.after(3000, self.gameOver, 1)
+		else:
+			self._reset = Button(self, text = "reset", command = self.reset, bg = 'black', fg = 'white', anchor=CENTER)
+			self._reset.configure(width = 20)
+			resetWind = self.board.create_window(20,20, window = self._reset, anchor=CENTER)
 
+	def reset(self, event=None):
+		self._Matrix = Matrix.Matrix()
+		self._CurShape = Shape.Shape()
+		self._shapes = []
+		self.score_count = 0
+		self.board.delete("all")
+		self.initDraw()
+		self.difficulty = 1600
+		self._job = self.after(self.difficulty, self.moveDown, 1) 
 	def score(self, row_score):
-		print "\nrow score"
-		print row_score
 		self.score_count = self.score_count + 10
 		for row in range(row_score):
 			for col in range(self._col):
@@ -205,7 +223,6 @@ class Application(Frame):
 
 
 	def removeCurrent(self):
-		print "remove Current"
 		grid = self._CurShape.getLayout()
 		row = self._CurShape.getRow()
 		col = self._CurShape.getCol()
