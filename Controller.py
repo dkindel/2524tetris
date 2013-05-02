@@ -265,12 +265,62 @@ class Application(Frame):
 		
 	def menu(self):
 		self.startGameButton = Button(self, text="Start Game", bg = 'black', fg = 'white', command = self.startGame)
+		self.helpButton = Button(self, text = "Help", bg = 'black', fg = 'white', command = self.helpScreen)
 		self.quitButton = Button(self, text = "Quit", bg = 'black', fg = 'white', command = self.quit)
 		self.startGameButton.pack()
 		self.quitButton.pack()
+		self.helpButton.pack()
 		
+	def helpScreen(self):
+		self.startGameButton.destroy()
+		self.helpButton.destroy()
+		self.quitButton.destroy()
+		
+		self.line1 = Entry(self)	#left and right
+		self.line1E = Entry(self)	#l/r extra
+		self.line2 = Entry(self)	#up and r
+		self.line2E = Entry(self)	#up/r extra
+		self.line3 = Entry(self)	#down to move faster
+		self.line3E = Entry(self)	#down extra
+		self.line4 = Entry(self)	#space to drop
+		self.line4E = Entry(self)	#space extra
+		self.line1.pack()
+		self.line1E.pack()
+		self.line2.pack()
+		self.line2E.pack()
+		self.line3.pack()
+		self.line3E.pack()
+		self.line4.pack()
+		self.line4E.pack()
+		self.line1.insert(0, "Left and Right arrows:")
+		self.line1E.insert(0, "    move left or right")
+		self.line2.insert(0, "Up and r keys:")
+		self.line2E.insert(0, "    rotate")
+		self.line3.insert(0, "Down arrow key:")
+		self.line3E.insert(0, "    drop 1 space") 
+		self.line4.insert(0, "Space bar:")
+		self.line4E.insert(0, "    drop to bottom")
+		
+		self.backFromHelpButton = Button(self, text = "<< Back", bg = 'black', fg = 'white', command = self.backFromHelp)
+		self.backFromHelpButton.pack()
+		
+	def backFromHelp(self):
+		self.line1.destroy()
+		self.line1E.destroy()
+		self.line2.destroy()
+		self.line2E.destroy()
+		self.line3.destroy()
+		self.line3E.destroy()
+		self.line4.destroy()
+		self.line4E.destroy()
+		self.backFromHelpButton.destroy()
+		self.menu()
+		
+	
+	
 	def startGame(self):
 		self.startGameButton.destroy()
+		self.helpButton.destroy()
 		self.quitButton.destroy()
 		
 		self.regButton = Button(self, text = "Increasing Difficulty", bg = 'black', fg = 'white', command = self.regPlay)
@@ -282,12 +332,14 @@ class Application(Frame):
 	def regPlay(self):
 		self.regButton.destroy()
 		self.constButton.destroy()
+		self.backToMainButton.destroy()
 		self.initDraw()
 		self.bindEvents()
 		
 	def constantPlay(self):
 		self.regButton.destroy()
 		self.constButton.destroy()
+		self.backToMainButton.destroy()
 		self.easyButton = Button(self, text = "Easy", bg = 'black', fg = 'white', command = self.setEasyDiff)
 		self.medButton = Button(self, text = "Medium", bg = 'black', fg = 'white', command = self.setMedDiff)
 		self.hardButton = Button(self, text = "Hard", bg = 'black', fg = 'white', command = self.setHardDiff)
