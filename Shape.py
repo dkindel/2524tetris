@@ -60,7 +60,7 @@ class Shape:
 		self._type = type_dict[type_int]
 		self._orient = random.randint(1,4)
 		# initialize position
-		print "shape class\n"
+		#print "shape class\n"
 		self._position_row = -3
 		self._position_col = 5
 		#Checks if the type is anything but I and moves it down one

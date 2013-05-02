@@ -21,7 +21,7 @@ class Application(Frame):
 		self.voidmove = 0
 		self.score_count = 0
 		self.increaseDiff = 1
-		print("In init")
+		#print("In init")
 		master.minsize(height = self.boardHeight+5, width = self.boardWidth+5)
 		master.maxsize(height = self.boardHeight+5, width = self.boardWidth+5)
 		master.title("Tetris!")
@@ -73,7 +73,7 @@ class Application(Frame):
 		self.removeCurrent()
 		self._CurShape.moveDown()
 		self.redrawAfter()
-		print self.difficulty
+		#print self.difficulty
 #If setDone is true, add the shape to a list so it can not be easily motified and call for a new piece to be generated in its spot
 		
 		return ret
@@ -142,7 +142,7 @@ class Application(Frame):
 				else:
 					self.board.create_rectangle(x1,y1,x2,y2, fill='orange')
 	def turnOver(self):
-		print "turn over"
+		#print "turn over"
 		self.voidmove = 0
 		self.checkBoardforScore()
 
@@ -155,7 +155,7 @@ class Application(Frame):
                         for x in range(col - 2, col + 2):
                                 if grid[y - (row - 1)][x - (col - 2)] == 2:
 					if self._Matrix.getValue(y, x) == -1:
-						print "\n \n GAME OVER \n \n"
+						#print "\n \n GAME OVER \n \n"
 						if self._job is not None:
 							self.after_cancel(self._job)
 							self._job = None
@@ -163,7 +163,7 @@ class Application(Frame):
 		self._CurShape = Shape.Shape()
 
 	def addNextShape(self):
-		print "addNextShape"
+		#print "addNextShape"
 		self.voidmove = 0
 				
 		self._CurShape = Shape.Shape()
@@ -222,7 +222,8 @@ class Application(Frame):
 		self.board.delete("all")
 		self.initDraw(0)
 		self.voidmove = 0
-		self.difficulty = 1600
+		if(self.increaseDiff):
+			self.difficulty = 1600
 		self._job = self.after(self.difficulty, self.moveDown, 1) 
 	def score(self, row_score):
 		self.score_count = self.score_count + 10
@@ -239,10 +240,10 @@ class Application(Frame):
 		self.updateDifficulty()
 		
 	def updateDifficulty(self):
-		if(self.increaseDiff and self.difficulty > 400):
+		if(self.increaseDiff and self.difficulty > 300):
 			self.difficulty = int(self.difficulty*.9)
-			if(self.difficulty < 400):
-				self.difficulty = 400
+			if(self.difficulty < 300):
+				self.difficulty = 300
 		
 
 
@@ -257,7 +258,7 @@ class Application(Frame):
 					self._Matrix.setValue(y, x, 0)
 					
 	def updateScoreBox(self):
-		print "updating"
+		#print "updating"
 		self.scoreBox.delete(0, END)
 		self.scoreBox.insert(0, "Score: " + str(self.score_count))
 		self.scoreBox.pack(side = BOTTOM)
@@ -333,6 +334,7 @@ class Application(Frame):
 		self.regButton.destroy()
 		self.constButton.destroy()
 		self.backToMainButton.destroy()
+		self.increaseDiff = 1
 		self.initDraw()
 		self.bindEvents()
 		
@@ -379,7 +381,7 @@ class Application(Frame):
 		self.difficulty = 1000
 		self.startConst()
 	def setHardDiff(self):
-		self.difficulty = 400
+		self.difficulty = 300
 		self.startConst()
 		
 	def startConst(self):
