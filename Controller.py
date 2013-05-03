@@ -1,5 +1,5 @@
 #!/usr/bin/python2
-# ece2524 final prokect - Tetris
+# ece2524 final project - Tetris
 # controller class 
 
 import Shape
