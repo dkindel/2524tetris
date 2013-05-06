@@ -1,8 +1,10 @@
-Title: Tetris
+#Tetris
+
 Contributors: dkindel, taylorm17, mxj, brianmay27
-Type: game
-Description: A GUI based Tetris Game
-repo: https://github.com/dkindel/2524tetris.git
+
+Not all the files are required to run our Tetris Application.  The only required files are "Controller.py", "Matrix.py", and "Shape.py".
+The rest of the files are text documents and testing files.  Instructions on how to play are included in the game by clicking on the 
+"Help" button in the main menu.
 
 To install tkinter (required for running this application), run 
 
