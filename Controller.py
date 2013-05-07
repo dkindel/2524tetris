@@ -21,6 +21,7 @@ class Application(Frame):
 		self.voidmove = 0
 		self.score_count = 0
 		self.increaseDiff = 1
+		self.paused = 0
 		#print("In init")
 		master.minsize(height = self.boardHeight+5, width = self.boardWidth+5)
 		master.maxsize(height = self.boardHeight+5, width = self.boardWidth+5)
@@ -31,13 +32,15 @@ class Application(Frame):
 		
 	
 	def bindEvents(self):
-		self.master.bind_all("<Left>", lambda event, arg = -1: self.moveLateral(event, arg))
-		self.master.bind_all("<Right>", lambda event, arg = 1: self.moveLateral(event, arg))
-		self.master.bind_all("<Up>", lambda event, arg = 0: self.moveLateral(event, arg))
-		self.master.bind_all('r', lambda event, arg = 0: self.moveLateral(event, arg))
-		self.master.bind_all('<Down>', self.moveDown)
-		self.master.bind_all('<space>', self.moveBottom)
+		self.bind_L_funcID = self.master.bind_all("<Left>", lambda event, arg = -1: self.moveLateral(event, arg))
+		self.bind_R_funcID = self.master.bind_all("<Right>", lambda event, arg = 1: self.moveLateral(event, arg))
+		self.bind_Up_funcID = self.master.bind_all("<Up>", lambda event, arg = 0: self.moveLateral(event, arg))
+		self.bind_r_funcID = self.master.bind_all('r', lambda event, arg = 0: self.moveLateral(event, arg))
+		self.bind_D_funcID = self.master.bind_all('<Down>', self.moveDown)
+		self.bind_space_funcID = self.master.bind_all('<space>', self.moveBottom)
+		self.bind_p_funcID = self.master.bind_all('p', self.pause)
 		self._job = self.after(self.difficulty, self.moveDown, 1)
+		
 		
 	def initDraw(self, init = 1):
 		if init == 1:
@@ -214,6 +217,37 @@ class Application(Frame):
 		self.board.destroy()
 		self.menu()
 
+		
+		
+	def unbindEvents(self):
+		self.master.unbind_all("<Left>")
+		self.master.unbind_all("<Right>")
+		self.master.unbind_all("<Up>")
+		self.master.unbind_all('r')
+		self.master.unbind_all('<Down>')
+		self.master.unbind_all('<space>')
+		self.master.unbind_all('p')
+		if self._job is not None:
+			self.after_cancel(self._job)
+			self._job = None
+
+	def pause(self, event = None):
+		
+		self.paused = not self.paused
+		if(self.paused):
+			self.unbindEvents()
+			self.bind_p_funcID = self.master.bind_all('p', self.pause)
+			self.scoreBox.delete(0, END)
+			self.scoreBox.insert(0, "Paused, Score: " + str(self.score_count))
+			self.scoreBox.pack(side = BOTTOM)
+
+		else:
+			self.scoreBox.delete(0, END)
+			self.scoreBox.insert(0, "Score: " + str(self.score_count))
+			self.scoreBox.pack(side = BOTTOM)
+			self.bindEvents()
+	
+	
 	def reset(self, event=None):
 		self._Matrix.clear()
 		self._CurShape = Shape.Shape()
@@ -225,6 +259,8 @@ class Application(Frame):
 		if(self.increaseDiff):
 			self.difficulty = 1600
 		self._job = self.after(self.difficulty, self.moveDown, 1) 
+		
+		
 	def score(self, row_score):
 		self.score_count = self.score_count + 10
 		for row in range(row_score):
