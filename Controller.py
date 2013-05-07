@@ -29,6 +29,7 @@ class Application(Frame):
 		self.pack()
 		self.menu()
 		self._CurShape = Shape.Shape()
+		self.scoreText = StringVar()
 		
 	
 	def bindEvents(self):
@@ -45,12 +46,11 @@ class Application(Frame):
 	def initDraw(self, init = 1):
 		if init == 1:
 			self.board = Canvas(self, bg = 'gray', height = self.boardHeight, width = self.boardWidth, bd = 0)
-			self.scoreBox = Entry(self)
+			self.scoreBox = Label(self,state=NORMAL, justify=CENTER, textvariable=self.scoreText, fg = 'black')
 			self.quitButton = Button(self, text = "Quit", bg = 'black', fg = 'white', command = self.quit)
 			self.quitButton.pack(side = BOTTOM)
 			self.scoreBox.pack(side = BOTTOM)
-		self.scoreBox.delete(0, END)
-		self.scoreBox.insert(0, "Score: " + str(self.score_count))
+		self.scoreText.set("Score: " + str(self.score_count))
 		for row in range(self._row):
 			for col in range(self._col):
 				x1 = col*self.sqSize
@@ -191,9 +191,7 @@ class Application(Frame):
 				for col in range(self._col):
 					if (self._Matrix.getValue(row, col) == 1):
 						self.board.create_rectangle(col*self.sqSize,row*self.sqSize, col*self.sqSize + self.sqSize, col*self.sqSize + self.sqSize, fill='red')
-			self.scoreBox.delete(0, END)
-			self.scoreBox.insert(0, "GAME OVER, Score: " + str(self.score_count))
-			self.scoreBox.pack(side = BOTTOM)
+			self.scoreText.set("GAME OVER, Score: " + str(self.score_count))
 			self.after(2000, self.gameOver, 1)
 		else:
 			self._reset = Button(self, text = "reset", command = self.reset, bg = 'black', fg = 'white', anchor=CENTER)
@@ -237,14 +235,10 @@ class Application(Frame):
 		if(self.paused):
 			self.unbindEvents()
 			self.bind_p_funcID = self.master.bind_all('p', self.pause)
-			self.scoreBox.delete(0, END)
-			self.scoreBox.insert(0, "Paused, Score: " + str(self.score_count))
-			self.scoreBox.pack(side = BOTTOM)
+			self.scoreText.set("Paused, Score: " + str(self.score_count))
 
 		else:
-			self.scoreBox.delete(0, END)
-			self.scoreBox.insert(0, "Score: " + str(self.score_count))
-			self.scoreBox.pack(side = BOTTOM)
+			self.scoreText.set("Score: " + str(self.score_count))
 			self.bindEvents()
 	
 	
@@ -272,7 +266,7 @@ class Application(Frame):
 					self._Matrix.setValue(row_score - row, col, temp)
 		
 		self.reDraw()		
-		self.updateScoreBox()
+		self.scoreText.set("Score: " + str(self.score_count))
 		self.updateDifficulty()
 		
 	def updateDifficulty(self):
@@ -292,13 +286,7 @@ class Application(Frame):
 			for x in range(col - 2, col + 2):
 				if grid[y - (row - 1)][x - (col - 2)] == 2:
 					self._Matrix.setValue(y, x, 0)
-					
-	def updateScoreBox(self):
-		#print "updating"
-		self.scoreBox.delete(0, END)
-		self.scoreBox.insert(0, "Score: " + str(self.score_count))
-		self.scoreBox.pack(side = BOTTOM)
-		
+				
 		
 	def menu(self):
 		self.startGameButton = Button(self, text="Start Game", bg = 'black', fg = 'white', command = self.startGame)
@@ -313,30 +301,26 @@ class Application(Frame):
 		self.helpButton.destroy()
 		self.quitButton.destroy()
 		
-		self.line1 = Entry(self)	#left and right
-		self.line1E = Entry(self)	#l/r extra
-		self.line2 = Entry(self)	#up and r
-		self.line2E = Entry(self)	#up/r extra
-		self.line3 = Entry(self)	#down to move faster
-		self.line3E = Entry(self)	#down extra
-		self.line4 = Entry(self)	#space to drop
-		self.line4E = Entry(self)	#space extra
-		self.line1.pack()
-		self.line1E.pack()
-		self.line2.pack()
-		self.line2E.pack()
-		self.line3.pack()
-		self.line3E.pack()
-		self.line4.pack()
-		self.line4E.pack()
-		self.line1.insert(0, "Left and Right arrows:")
-		self.line1E.insert(0, "    move left or right")
-		self.line2.insert(0, "Up and r keys:")
-		self.line2E.insert(0, "    rotate")
-		self.line3.insert(0, "Down arrow key:")
-		self.line3E.insert(0, "    drop 1 space") 
-		self.line4.insert(0, "Space bar:")
-		self.line4E.insert(0, "    drop to bottom")
+		self.line1 = Label(self,state=NORMAL,text="Move Left / Right:")
+		self.line1.pack()				#left and right
+		self.line1E = Label(self,state=NORMAL,text="    Left / Right")
+		self.line1E.pack()				#l/r extra
+		self.line2 = Label(self,state=NORMAL,text="Rotate Piece:")
+		self.line2.pack()				#up and r
+		self.line2E = Label(self,state=NORMAL,text="    Up / r")
+		self.line2E.pack()				#up/r extra
+		self.line3 = Label(self,state=NORMAL,text="Drop Piece 1 Space:")
+		self.line3.pack()				#down to move faster
+		self.line3E = Label(self,state=NORMAL,text="    Down")
+		self.line3E.pack()				#down extra
+		self.line4 = Label(self,state=NORMAL,text="Drop Piece to Bottom:")
+		self.line4.pack()				#space to drop
+		self.line4E = Label(self,state=NORMAL,text="    Space")
+		self.line4E.pack()				#space extra
+		self.line5 = Label(self,state=NORMAL,text="Pause Game:")
+		self.line5.pack()				#pause to drop
+		self.line5E = Label(self,state=NORMAL,text="    p")
+		self.line5E.pack()				#pause extra
 		
 		self.backFromHelpButton = Button(self, text = "<< Back", bg = 'black', fg = 'white', command = self.backFromHelp)
 		self.backFromHelpButton.pack()
@@ -350,6 +334,8 @@ class Application(Frame):
 		self.line3E.destroy()
 		self.line4.destroy()
 		self.line4E.destroy()
+		self.line5.destroy()
+		self.line5E.destroy()
 		self.backFromHelpButton.destroy()
 		self.menu()
 		
