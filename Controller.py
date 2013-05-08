@@ -184,15 +184,13 @@ class Application(Frame):
 
 	def gameOver(self, timer):
 		if timer is None:
-			if self._job is not None:
-				self.after_cancel(self._job)
-				self._job = None
+			self.unbindEvents()
 			for row in range(self._row):
 				for col in range(self._col):
 					if (self._Matrix.getValue(row, col) == 1):
 						self.board.create_rectangle(col*self.sqSize,row*self.sqSize, col*self.sqSize + self.sqSize, col*self.sqSize + self.sqSize, fill='red')
 			self.scoreText.set("GAME OVER, Score: " + str(self.score_count))
-			self.after(2000, self.gameOver, 1)
+			self.after(1000, self.gameOver, 1)
 		else:
 			self._reset = Button(self, text = "reset", command = self.reset, bg = 'black', fg = 'white', anchor=CENTER)
 			self._reset.configure(width = 10)
@@ -243,6 +241,7 @@ class Application(Frame):
 	
 	
 	def reset(self, event=None):
+		self.bindEvents()
 		self._Matrix.clear()
 		self._CurShape = Shape.Shape()
 		self._Shapes = []
@@ -293,33 +292,33 @@ class Application(Frame):
 		self.helpButton = Button(self, text = "Help", bg = 'black', fg = 'white', command = self.helpScreen)
 		self.quitButton = Button(self, text = "Quit", bg = 'black', fg = 'white', command = self.quit)
 		self.startGameButton.pack()
-		self.quitButton.pack()
 		self.helpButton.pack()
+		self.quitButton.pack()
 		
 	def helpScreen(self):
 		self.startGameButton.destroy()
 		self.helpButton.destroy()
 		self.quitButton.destroy()
 		
-		self.line1 = Label(self,state=NORMAL,text="Move Left / Right:")
+		self.line1 = Label(self,state=NORMAL,justify=LEFT,anchor=W,text="Move Left / Right:")
 		self.line1.pack()				#left and right
-		self.line1E = Label(self,state=NORMAL,text="    Left / Right")
+		self.line1E = Label(self,state=NORMAL,justify=RIGHT,anchor=E,text="--Left / Right")
 		self.line1E.pack()				#l/r extra
-		self.line2 = Label(self,state=NORMAL,text="Rotate Piece:")
+		self.line2 = Label(self,state=NORMAL,justify=LEFT,anchor=W,text="Rotate Piece:")
 		self.line2.pack()				#up and r
-		self.line2E = Label(self,state=NORMAL,text="    Up / r")
+		self.line2E = Label(self,state=NORMAL,justify=RIGHT,anchor=E,text="--Up / r")
 		self.line2E.pack()				#up/r extra
-		self.line3 = Label(self,state=NORMAL,text="Drop Piece 1 Space:")
+		self.line3 = Label(self,state=NORMAL,justify=LEFT,anchor=W,text="Drop Piece 1 Space:")
 		self.line3.pack()				#down to move faster
-		self.line3E = Label(self,state=NORMAL,text="    Down")
+		self.line3E = Label(self,state=NORMAL,justify=RIGHT,anchor=E,text="--Down")
 		self.line3E.pack()				#down extra
-		self.line4 = Label(self,state=NORMAL,text="Drop Piece to Bottom:")
+		self.line4 = Label(self,state=NORMAL,justify=LEFT,anchor=W,text="Drop Piece to Bottom:")
 		self.line4.pack()				#space to drop
-		self.line4E = Label(self,state=NORMAL,text="    Space")
+		self.line4E = Label(self,state=NORMAL,justify=RIGHT,anchor=E,text="--Space")
 		self.line4E.pack()				#space extra
-		self.line5 = Label(self,state=NORMAL,text="Pause Game:")
+		self.line5 = Label(self,state=NORMAL,justify=LEFT,anchor=W,text="Pause Game:")
 		self.line5.pack()				#pause to drop
-		self.line5E = Label(self,state=NORMAL,text="    p")
+		self.line5E = Label(self,state=NORMAL,justify=RIGHT,anchor=E,text="--p")
 		self.line5E.pack()				#pause extra
 		
 		self.backFromHelpButton = Button(self, text = "<< Back", bg = 'black', fg = 'white', command = self.backFromHelp)
@@ -351,6 +350,7 @@ class Application(Frame):
 		self.backToMainButton = Button(self, text = "<< Back", bg = 'black', fg = 'white', command = self.goBackToMain)
 		self.regButton.pack()
 		self.constButton.pack()
+		self.backToMainButton.pack()
 		
 	def regPlay(self):
 		self.regButton.destroy()
