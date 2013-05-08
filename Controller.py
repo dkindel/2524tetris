@@ -93,7 +93,7 @@ class Application(Frame):
                 for y in range(row - 1, row + 3):
                         for x in range(col - 2, col + 2):
                                 if grid[y - (row - 1)][x - (col - 2)] == 2:
-                                        if (self._Matrix.getValue(y, x + direction) == 1 or x + direction < 0 or x + direction >= 10 ):
+                                        if (self._Matrix.getValue(y, x + direction) == 1 or x + direction < 0 or x + direction >= 10 or y + direction >= 15):
 						if direction == 0:
 							self._CurShape.rotateCW()
 						self.redrawAfter()
