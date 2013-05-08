@@ -299,26 +299,38 @@ class Application(Frame):
 		self.startGameButton.destroy()
 		self.helpButton.destroy()
 		self.quitButton.destroy()
+		helpText = \
+"Move Left / Right:\n\
+      --Left / Right\n\n\
+Rotate Piece:\n\
+      --Up / r\n\n\
+Drop Piece 1 Space:\n\
+      --Down\n\n\
+Piece to Bottom:\n\
+      --Space\n\n\
+Pause Game:\n\
+      --p"
+
 		
-		self.line1 = Label(self,state=NORMAL,justify=LEFT,anchor=W,text="Move Left / Right:")
+		self.line1 = Label(self,state=NORMAL,justify=LEFT,anchor=W,text=helpText)
 		self.line1.pack()				#left and right
-		self.line1E = Label(self,state=NORMAL,justify=RIGHT,anchor=E,text="--Left / Right")
+		self.line1E = Label(self,state=NORMAL,justify=RIGHT,anchor=E,text="")
 		self.line1E.pack()				#l/r extra
-		self.line2 = Label(self,state=NORMAL,justify=LEFT,anchor=W,text="Rotate Piece:")
+		self.line2 = Label(self,state=NORMAL,justify=LEFT,anchor=W,text="")
 		self.line2.pack()				#up and r
-		self.line2E = Label(self,state=NORMAL,justify=RIGHT,anchor=E,text="--Up / r")
+		self.line2E = Label(self,state=NORMAL,justify=RIGHT,anchor=E,text="")
 		self.line2E.pack()				#up/r extra
-		self.line3 = Label(self,state=NORMAL,justify=LEFT,anchor=W,text="Drop Piece 1 Space:")
+		self.line3 = Label(self,state=NORMAL,justify=LEFT,anchor=W,text="")
 		self.line3.pack()				#down to move faster
-		self.line3E = Label(self,state=NORMAL,justify=RIGHT,anchor=E,text="--Down")
+		self.line3E = Label(self,state=NORMAL,justify=RIGHT,anchor=E,text="")
 		self.line3E.pack()				#down extra
-		self.line4 = Label(self,state=NORMAL,justify=LEFT,anchor=W,text="Drop Piece to Bottom:")
+		self.line4 = Label(self,state=NORMAL,justify=LEFT,anchor=W,text="")
 		self.line4.pack()				#space to drop
-		self.line4E = Label(self,state=NORMAL,justify=RIGHT,anchor=E,text="--Space")
+		self.line4E = Label(self,state=NORMAL,justify=RIGHT,anchor=E,text="")
 		self.line4E.pack()				#space extra
-		self.line5 = Label(self,state=NORMAL,justify=LEFT,anchor=W,text="Pause Game:")
+		self.line5 = Label(self,state=NORMAL,justify=LEFT,anchor=W,text="")
 		self.line5.pack()				#pause to drop
-		self.line5E = Label(self,state=NORMAL,justify=RIGHT,anchor=E,text="--p")
+		self.line5E = Label(self,state=NORMAL,justify=RIGHT,anchor=E,text="")
 		self.line5E.pack()				#pause extra
 		
 		self.backFromHelpButton = Button(self, text = "<< Back", bg = 'black', fg = 'white', command = self.backFromHelp)
